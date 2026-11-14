@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // للعودة إلى شاشة تسجيل الدخول عند الخروج
+import 'main.dart';
+import 'hazard_categories_screen.dart'; // تم استيراد صفحة فئات المخاطر
 
 class StudentHomeScreen extends StatefulWidget {
   final String userName;
-  final String userRole; // student, worker, admin
+  final String userRole;
   final bool isArabic;
 
   const StudentHomeScreen({
@@ -28,7 +29,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
   String t(String ar, String en) => _isAr ? ar : en;
 
-  // دالة تأكيد تسجيل الخروج
   void _confirmLogout() {
     showDialog(
       context: context,
@@ -51,7 +51,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(ctx);
-                // العودة إلى شاشة تسجيل الدخول وحذف سجل الصفحات السابقة
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -78,7 +77,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // تحديد اللقب حسب نوع الحساب
     String roleBadge = widget.userRole == 'student'
         ? t('بوابة الطالب', 'Student Portal')
         : widget.userRole == 'worker'
@@ -93,29 +91,17 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
           backgroundColor: const Color(0xFF1A5D3A),
           elevation: 0,
           centerTitle: true,
-          // زر تبديل اللغة السريع
           leading: IconButton(
             icon: const Icon(Icons.language, color: Colors.white),
-            tooltip: t('تغيير اللغة', 'Change Language'),
-            onPressed: () {
-              setState(() {
-                _isAr = !_isAr;
-              });
-            },
+            onPressed: () => setState(() => _isAr = !_isAr),
           ),
           title: Text(
             t('الرئيسية', 'Home'),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          // زر تسجيل الخروج في الشريط العلوي
           actions: [
             IconButton(
               icon: const Icon(Icons.logout_rounded, color: Colors.white),
-              tooltip: t('تسجيل الخروج', 'Logout'),
               onPressed: _confirmLogout,
             ),
           ],
@@ -126,7 +112,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // 1. بطاقة الترحيب العلوية بالاسم المدخل
+                // 1. بطاقة الترحيب
                 Container(
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
@@ -136,22 +122,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                       end: Alignment.bottomLeft,
                     ),
                     borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF1A5D3A).withOpacity(0.25),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
                   ),
                   child: Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
                         child: const Text('👋', style: TextStyle(fontSize: 28)),
                       ),
                       const SizedBox(width: 16),
@@ -167,29 +143,18 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                               ),
                               child: Text(
                                 roleBadge,
-                                style: const TextStyle(
-                                  color: Color(0xFFFFE082),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: const TextStyle(color: Color(0xFFFFE082), fontSize: 11, fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              t('مرحباً، ${widget.userName}', 'Welcome,${widget.userName}'),
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              t('مرحباً، ${widget.userName}', 'Welcome, ${widget.userName}'),
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               t('كيف نقدر نساعدك اليوم؟', 'How can we help you today?'),
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.white.withOpacity(0.85),
-                              ),
+                              style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.85)),
                             ),
                           ],
                         ),
@@ -200,12 +165,17 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
                 const SizedBox(height: 18),
 
-                // 2. زر الإبلاغ عن خطر الرئيسي
+                // 2. زر الإبلاغ عن خطر الرئيسي (مربوط وجاهز)
                 SizedBox(
                   height: 52,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // سنربطه بصفحة فئات المخاطر في الخطوة القادمة
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HazardCategoriesScreen(isArabic: _isAr),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.add_circle_outline, size: 22),
                     label: Text(
@@ -216,9 +186,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                       backgroundColor: const Color(0xFF1A5D3A),
                       foregroundColor: Colors.white,
                       elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                   ),
                 ),
@@ -251,11 +219,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                 // 4. قسم آخر التحديثات
                 Text(
                   t('آخر التحديثات', 'Recent Updates'),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A2E22),
-                  ),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1A2E22)),
                 ),
 
                 const SizedBox(height: 12),
@@ -293,9 +257,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF1A5D3A),
                       side: const BorderSide(color: Color(0xFF1A5D3A), width: 1.2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(
                       t('عرض كل بلاغاتي', 'View All My Reports'),
@@ -306,7 +268,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
                 const SizedBox(height: 12),
 
-                // 6. زر تسجيل الخروج السفلي الإضافي لسهولة الوصول
+                // 6. زر تسجيل الخروج السفلي
                 TextButton.icon(
                   onPressed: _confirmLogout,
                   icon: const Icon(Icons.logout, color: Colors.redAccent, size: 20),
@@ -323,11 +285,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     );
   }
 
-  Widget _buildStatCard({
-    required String count,
-    required String label,
-    required Color numberColor,
-  }) {
+  Widget _buildStatCard({required String count, required String label, required Color numberColor}) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       decoration: BoxDecoration(
@@ -337,15 +295,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
       ),
       child: Column(
         children: [
-          Text(
-            count,
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: numberColor),
-          ),
+          Text(count, style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: numberColor)),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF6B7C72), fontWeight: FontWeight.w500),
-          ),
+          Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF6B7C72), fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -371,10 +323,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6F8F7),
-              borderRadius: BorderRadius.circular(10),
-            ),
+            decoration: BoxDecoration(color: const Color(0xFFF6F8F7), borderRadius: BorderRadius.circular(10)),
             child: Icon(icon, color: iconColor, size: 24),
           ),
           const SizedBox(width: 12),
@@ -382,28 +331,16 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1A2E22)),
-                ),
+                Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1A2E22))),
                 const SizedBox(height: 4),
-                Text(
-                  location,
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF6B7C72)),
-                ),
+                Text(location, style: const TextStyle(fontSize: 12, color: Color(0xFF6B7C72))),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: statusBgColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              status,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: statusTextColor),
-            ),
+            decoration: BoxDecoration(color: statusBgColor, borderRadius: BorderRadius.circular(8)),
+            child: Text(status, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: statusTextColor)),
           ),
         ],
       ),
