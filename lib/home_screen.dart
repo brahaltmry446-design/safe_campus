@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'hazard_categories_screen.dart'; // تم استيراد صفحة فئات المخاطر
 import 'my_reports_screen.dart'; // تم استيراد صفحة بلاغاتي
-
+import 'safety_guide_screen.dart';
 class StudentHomeScreen extends StatefulWidget {
   final String userName;
   final String userRole;
@@ -280,7 +280,34 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                 ),
 
                 const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
+// زر الطوارئ وإرشادات السلامة
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SafetyGuideScreen(isArabic: _isAr),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.health_and_safety_outlined, size: 20),
+                    label: Text(
+                      t('الطوارئ وإرشادات السلامة', 'Emergency & Safety Guide'),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFEF2F2),
+                      foregroundColor: const Color(0xFFDC2626),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFFECACA)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
                 // 6. زر تسجيل الخروج السفلي
                 TextButton.icon(
                   onPressed: _confirmLogout,
