@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'hazard_categories_screen.dart'; // تم استيراد صفحة فئات المخاطر
+import 'my_reports_screen.dart'; // تم استيراد صفحة بلاغاتي
 
 class StudentHomeScreen extends StatefulWidget {
   final String userName;
@@ -28,6 +29,15 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   }
 
   String t(String ar, String en) => _isAr ? ar : en;
+
+  void _openMyReports() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyReportsScreen(isArabic: _isAr),
+      ),
+    );
+  }
 
   void _confirmLogout() {
     showDialog(
@@ -193,14 +203,17 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
                 const SizedBox(height: 18),
 
-                // 3. بطاقات الإحصائيات
+                // 3. بطاقات الإحصائيات (بطاقة بلاغاتي مربوطة أيضاً)
                 Row(
                   children: [
                     Expanded(
-                      child: _buildStatCard(
-                        count: '03',
-                        label: t('بلاغاتي', 'My Reports'),
-                        numberColor: const Color(0xFF1A5D3A),
+                      child: GestureDetector(
+                        onTap: _openMyReports,
+                        child: _buildStatCard(
+                          count: '04',
+                          label: t('بلاغاتي', 'My Reports'),
+                          numberColor: const Color(0xFF1A5D3A),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -248,11 +261,11 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
                 const SizedBox(height: 20),
 
-                // 5. زر عرض كل بلاغاتي
+                // 5. زر عرض كل بلاغاتي (تم الربط هنا)
                 SizedBox(
                   height: 48,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: _openMyReports,
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF1A5D3A),
