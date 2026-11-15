@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'staff_dashboard_screen.dart';
+import 'supervisor_dashboard_screen.dart';
 
 void main() {
   runApp(const SafeCampusPrototypeApp());
@@ -66,7 +67,7 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
   late bool _isAr;
-  int _selectedRole = 0;
+  int _selectedRole = 0; // 0: طالب, 1: صيانة, 2: مشرف
 
   @override
   void initState() {
@@ -105,27 +106,33 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
       return;
     }
 
-    String roleStr = _selectedRole == 0
-        ? 'student'
-        : _selectedRole == 1
-        ? 'worker'
-        : 'supervisor';
-
     // التوجيه الذكي حسب البوابة المختارة
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => _selectedRole == 0
-            ? StudentHomeScreen(
-          userName: enteredName,
-          userRole: roleStr,
-          isArabic: _isAr,
-        )
-            : StaffDashboardScreen(
-          userName: enteredName,
-          userRole: roleStr,
-          isArabic: _isAr,
-        ),
+        builder: (context) {
+          if (_selectedRole == 0) {
+            // بوابـة الطـالب
+            return StudentHomeScreen(
+              userName: enteredName,
+              userRole: 'student',
+              isArabic: _isAr,
+            );
+          } else if (_selectedRole == 1) {
+            // بوابـة فريـق الصيـانة
+            return StaffDashboardScreen(
+              userName: enteredName,
+              userRole: 'worker',
+              isArabic: _isAr,
+            );
+          } else {
+            // بوابـة مشـرف السـلامة
+            return SupervisorDashboardScreen(
+              userName: enteredName,
+              isArabic: _isAr,
+            );
+          }
+        },
       ),
     );
   }
@@ -248,7 +255,7 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
                             children: [
                               _buildRoleTab(0, t('طالب', 'Student'), Icons.school_outlined),
                               _buildRoleTab(1, t('صيانة', 'Worker'), Icons.engineering_outlined),
-                              _buildRoleTab(2, t('مشرف', 'Admin'), Icons.admin_panel_settings_outlined),
+                              _buildRoleTab(2, t('مشرف', 'Supervisor'), Icons.admin_panel_settings_outlined),
                             ],
                           ),
                         ),
@@ -394,7 +401,7 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12.5,
+                  fontSize: 11.5,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                   color: isSelected ? Colors.white : const Color(0xFF5C6E63),
                 ),
