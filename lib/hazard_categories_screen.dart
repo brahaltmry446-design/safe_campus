@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'create_report_screen.dart';
 
 // كلاس بسيط لتمثيل بيانات كل فئة خطر بوضوح دون تعقيد
 class HazardCategory {
@@ -179,19 +180,22 @@ class _HazardCategoriesScreenState extends State<HazardCategoriesScreen> {
                 SizedBox(
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _selectedIndex == null
-                        ? null
-                        : () {
-                      final selectedItem = _categories[_selectedIndex!];
-                      final selectedTitle = widget.isArabic ? selectedItem.titleAr : selectedItem.titleEn;
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(t('تم اختيار: $selectedTitle', 'Selected: $selectedTitle')),
-                          backgroundColor: const Color(0xFF1A5D3A),
-                        ),
-                      );
-                    },
+                     onPressed: _selectedIndex == null
+                      ? null
+                      : () {
+                final selectedItem = _categories[_selectedIndex!];
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => CreateReportScreen(
+                categoryName: widget.isArabic ? selectedItem.titleAr : selectedItem.titleEn,
+                categoryIcon: selectedItem.icon,
+                categoryColor: selectedItem.color,
+                isArabic: widget.isArabic,
+                ),
+                ),
+                );
+                },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1A5D3A),
                       disabledBackgroundColor: const Color(0xFFCBD5CE),
