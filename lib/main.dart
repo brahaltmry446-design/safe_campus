@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
+import 'staff_dashboard_screen.dart';
 
 void main() {
   runApp(const SafeCampusPrototypeApp());
@@ -60,7 +61,7 @@ class EnhancedLoginScreen extends StatefulWidget {
 }
 
 class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
-  final TextEditingController _nameController = TextEditingController(); // حقل الاسم الجديد
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -108,13 +109,19 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
         ? 'student'
         : _selectedRole == 1
         ? 'worker'
-        : 'admin';
+        : 'supervisor';
 
-    // الانتقال إلى الصفحة الرئيسية مع تمرير الاسم المدخل واللغة والبوابة
+    // التوجيه الذكي حسب البوابة المختارة
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => StudentHomeScreen(
+        builder: (context) => _selectedRole == 0
+            ? StudentHomeScreen(
+          userName: enteredName,
+          userRole: roleStr,
+          isArabic: _isAr,
+        )
+            : StaffDashboardScreen(
           userName: enteredName,
           userRole: roleStr,
           isArabic: _isAr,
@@ -151,7 +158,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 children: [
-                  // الشريط العلوي
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -195,7 +201,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
 
                   const SizedBox(height: 16),
 
-                  // شعار الجامعة
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -217,7 +222,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
 
                   const SizedBox(height: 20),
 
-                  // بطاقة تسجيل الدخول
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -234,7 +238,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // اختيار البوابة
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
@@ -252,7 +255,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
 
                         const SizedBox(height: 18),
 
-                        // 1. حقل الاسم (لجعل الاسم ديناميكياً في كل مرة)
                         Text(
                           t('الاسم الكامل', 'Full Name'),
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A2E22)),
@@ -280,7 +282,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
 
                         const SizedBox(height: 14),
 
-                        // 2. حقل الرقم الجامعي / الوظيفي
                         Text(
                           idLabel,
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A2E22)),
@@ -309,7 +310,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
 
                         const SizedBox(height: 14),
 
-                        // 3. حقل كلمة المرور
                         Text(
                           t('كلمة المرور', 'Password'),
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A2E22)),
@@ -346,7 +346,6 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
 
                         const SizedBox(height: 22),
 
-                        // زر تسجيل الدخول
                         SizedBox(
                           height: 50,
                           child: ElevatedButton.icon(
