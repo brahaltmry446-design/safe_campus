@@ -23,7 +23,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _locationDetailsController = TextEditingController();
-
+  final _phoneController = TextEditingController();
   String? _selectedBuilding;
   String _severity = 'medium';
   bool _hasAttachment = false;
@@ -36,6 +36,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _locationDetailsController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -218,6 +219,14 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
                     maxLines: 3,
                     decoration: _inputDecoration(t('اشرح تفاصيل الخطر بشكل واضح...', 'Describe the hazard clearly...')),
                     validator: (val) => (val == null || val.trim().isEmpty) ? t('يرجى كتابة وصف مختصر', 'Please add a description') : null,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(t('رقم الهاتف للتواصل (اختياري)', 'Contact Phone (Optional)'), style: _labelStyle()),
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: _inputDecoration(t('مثال: 079XXXXXXX', 'e.g., 079XXXXXXX')),
                   ),
                   const SizedBox(height: 16),
                   InkWell(
