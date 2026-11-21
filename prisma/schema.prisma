@@ -1,0 +1,202 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model STUDENT {
+  StudentID          String          @id
+  FullName           String
+  Password           String
+  ContactInfo        String
+  LanguagePreference String          @default("Arabic")
+  reports            HAZARD_REPORT[]
+}
+
+model LOCATION {
+  LocationID          Int                   @id @default(autoincrement())
+  BuildingName        String
+  FloorLevel          String
+  RoomOrDetails       String
+  periodicInspections PERIODIC_INSPECTION[]
+  reports             HAZARD_REPORT[]
+}
+
+model HAZARD_CATEGORY {
+  CategoryID   Int             @id @default(autoincrement())
+  CategoryName String
+  reports      HAZARD_REPORT[]
+}
+
+model SUPERVISOR {
+  SupervisorID        String                @id
+  Username            String                @unique
+  Password            String
+  FullName            String
+  periodicInspections PERIODIC_INSPECTION[]
+  incidentReports     INCIDENT_REPORT[]
+  maintenanceTasks    MAINTENANCE_TASK[]
+  inspections         INSPECTION[]
+}
+
+model MAINTENANCE_TEAM {
+  TeamID      Int          @id @default(autoincrement())
+  TeamName    String
+  technicians TECHNICIAN[]
+}
+
+model TECHNICIAN {
+  EmployeeID          String             @id
+  TeamID              Int
+  team                MAINTENANCE_TEAM   @relation(fields: [TeamID], references: [TeamID])
+  FullName            String
+  Password            String
+  CompletedTasksCount Int                @default(0)
+  maintenanceTasks    MAINTENANCE_TASK[]
+}
+
+model PERIODIC_INSPECTION {
+  PeriodicID      Int                         @id @default(autoincrement())
+  SupervisorID    String
+  supervisor      SUPERVISOR                  @relation(fields: [SupervisorID], references: [SupervisorID])
+  LocationID      Int
+  location        LOCATION                    @relation(fields: [LocationID], references: [LocationID])
+  InspectionTitle String
+  FrequencyType   String
+  Status          String                      @default("Scheduled")
+  ScheduledDate   DateTime
+  ApprovedDate    DateTime?
+  checklistItems  INSPECTION_CHECKLIST_ITEM[]
+}
+
+model INSPECTION_CHECKLIST_ITEM {
+  ItemID             Int                 @id @default(autoincrement())
+  PeriodicID         Int
+  periodicInspection PERIODIC_INSPECTION @relation(fields: [PeriodicID], references: [PeriodicID])
+  CriteriaName       String
+  CheckResult        String
+  ConvertedToReport  Boolean             @default(false)
+  reports            HAZARD_REPORT[]
+}
+
+model HAZARD_REPORT {
+  ReportID           String                     @id
+  StudentID          String?
+  student            STUDENT?                   @relation(fields: [StudentID], references: [StudentID])
+  LocationID         Int
+  location           LOCATION                   @relation(fields: [LocationID], references: [LocationID])
+  CategoryID         Int
+  category           HAZARD_CATEGORY            @relation(fields: [CategoryID], references: [CategoryID])
+  ChecklistItemID    Int?
+  checklistItem      INSPECTION_CHECKLIST_ITEM? @relation(fields: [ChecklistItemID], references: [ItemID])
+  ProblemDescription String
+  RiskLevel          String
+  IsEmergency        Boolean                    @default(false)
+  Latitude           Decimal                    @db.Decimal(10, 6)
+  Longitude          Decimal                    @db.Decimal(10, 6)
+  CurrentStatus      String                     @default("Pending")
+  SubmissionDate     DateTime                   @default(now())
+  photos             REPORT_PHOTO[]
+  statusHistory      STATUS_TRACKING[]
+  incidentReports    INCIDENT_REPORT[]
+  maintenanceTasks   MAINTENANCE_TASK[]
+  notifications      NOTIFICATION[]
+}
+
+model REPORT_PHOTO {
+  PhotoID    Int           @id @default(autoincrement())
+  ReportID   String
+  report     HAZARD_REPORT @relation(fields: [ReportID], references: [ReportID])
+  ImageURL   String
+  UploadedAt DateTime      @default(now())
+}
+
+model STATUS_TRACKING {
+  TrackID    Int           @id @default(autoincrement())
+  ReportID   String
+  report     HAZARD_REPORT @relation(fields: [ReportID], references: [ReportID])
+  StatusName String
+  UpdatedAt  DateTime      @default(now())
+}
+
+model INCIDENT_REPORT {
+  IncidentReportID          Int           @id @default(autoincrement())
+  ReportID                  String
+  report                    HAZARD_REPORT @relation(fields: [ReportID], references: [ReportID])
+  SupervisorID              String
+  supervisor                SUPERVISOR    @relation(fields: [SupervisorID], references: [SupervisorID])
+  RootCause                 String
+  ActionsTaken              String
+  ImpactAssessment          String
+  PreventiveRecommendations String
+  ReportStatus              String        @default("Draft")
+  SupervisorSignature       String?
+  ApprovedAt                DateTime?
+}
+
+model MAINTENANCE_TASK {
+  TaskID           String          @id
+  ReportID         String
+  report           HAZARD_REPORT   @relation(fields: [ReportID], references: [ReportID])
+  EmployeeID       String
+  technician       TECHNICIAN      @relation(fields: [EmployeeID], references: [EmployeeID])
+  SupervisorID     String
+  supervisor       SUPERVISOR      @relation(fields: [SupervisorID], references: [SupervisorID])
+  TaskStatus       String          @default("Assigned")
+  NoPartsUsed      Boolean         @default(false)
+  MaintenanceNotes String?
+  Deadline         DateTime
+  CompletionDate   DateTime?
+  consumedParts    CONSUMED_PART[]
+  taskPhotos       TASK_PHOTO[]
+  inspections      INSPECTION[]
+}
+
+model CONSUMED_PART {
+  PartID             Int              @id @default(autoincrement())
+  TaskID             String
+  task               MAINTENANCE_TASK @relation(fields: [TaskID], references: [TaskID])
+  PartName           String
+  Quantity           Int
+  VerificationStatus String           @default("Pending")
+}
+
+model TASK_PHOTO {
+  PhotoID    Int              @id @default(autoincrement())
+  TaskID     String
+  task       MAINTENANCE_TASK @relation(fields: [TaskID], references: [TaskID])
+  ImageURL   String
+  UploadedAt DateTime         @default(now())
+}
+
+model INSPECTION {
+  InspectionID       Int              @id @default(autoincrement())
+  TaskID             String
+  task               MAINTENANCE_TASK @relation(fields: [TaskID], references: [TaskID])
+  SupervisorID       String
+  supervisor         SUPERVISOR       @relation(fields: [SupervisorID], references: [SupervisorID])
+  IsSiteSafe         Boolean
+  IsFullyRepaired    Boolean
+  NoRemainingHazards Boolean
+  PhotosMatch        Boolean
+  PartsVerified      Boolean
+  FinalDecision      String
+  RejectionNotes     String?
+  InspectionDate     DateTime         @default(now())
+}
+
+model NOTIFICATION {
+  NotificationID   Int           @id @default(autoincrement())
+  ReportID         String
+  report           HAZARD_REPORT @relation(fields: [ReportID], references: [ReportID])
+  ReceiverID       String
+  ReceiverRole     String
+  NotificationType String
+  Title            String
+  MessageContent   String
+  IsRead           Boolean       @default(false)
+  CreatedAt        DateTime      @default(now())
+}
