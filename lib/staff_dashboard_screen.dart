@@ -187,7 +187,7 @@ class _StaffDashboardScreenState extends State<StaffDashboardScreen> {
           ),
         ),
       ),
-    );
+    ).then((_) => noteController.dispose());
   }
 
   Widget _statusOptionChip(

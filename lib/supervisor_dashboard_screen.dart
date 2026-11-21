@@ -116,7 +116,7 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
                   style: const TextStyle(fontSize: 13, color: Color(0xFF6B7C72))),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
-                value: selectedWorker,
+                initialValue: selectedWorker,
                 hint: Text(t('اختر الفني المناسب', 'Select worker')),
                 isExpanded: true,
                 items: _workersList.map((worker) {

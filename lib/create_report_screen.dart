@@ -183,7 +183,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
                   Text(t('المبنى / الكلية', 'Building / Faculty'), style: _labelStyle()),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
-                    value: _selectedBuilding,
+                    initialValue: _selectedBuilding,
                     decoration: _inputDecoration(t('اختر المبنى', 'Select building')),
                     items: buildings.map((b) => DropdownMenuItem(value: b, child: Text(b))).toList(),
                     onChanged: (val) => setState(() => _selectedBuilding = val),
