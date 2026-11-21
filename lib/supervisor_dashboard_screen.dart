@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'supervisor_incident_report_screen.dart';
 
 class SupervisorReport {
   final String id;
@@ -111,7 +112,7 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(t('اختر الفني المسؤول عن إصلاح:', 'Select technician for:') + ' ${_isAr ? report.titleAr : report.titleEn}',
+              Text('${t('اختر الفني المسؤول عن إصلاح:', 'Select technician for:')} ${_isAr ? report.titleAr : report.titleEn}',
                   style: const TextStyle(fontSize: 13, color: Color(0xFF6B7C72))),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
@@ -217,6 +218,74 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
                 ),
               ),
 
+              // زر التقرير وأرشيف التقارير
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 44,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SupervisorIncidentReportMainScreen(
+                                  userName: widget.userName,
+                                  isArabic: _isAr,
+                                  initialTabIndex: 0,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.note_add_rounded, size: 18),
+                          label: Text(
+                            t('نموذج تقرير حادث', 'Incident Report'),
+                            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1A5D3A),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SizedBox(
+                        height: 44,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SupervisorIncidentReportMainScreen(
+                                  userName: widget.userName,
+                                  isArabic: _isAr,
+                                  initialTabIndex: 2,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+                          label: Text(
+                            t('أرشيف التقارير (PDF)', 'Reports Archive'),
+                            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF1A5D3A),
+                            side: const BorderSide(color: Color(0xFF1A5D3A), width: 1.2),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
               // أزرار الفلترة
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -303,19 +372,51 @@ class _SupervisorDashboardScreenState extends State<SupervisorDashboardScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 38,
-                            child: ElevatedButton.icon(
-                              onPressed: () => _assignWorkerDialog(item),
-                              icon: const Icon(Icons.assignment_ind_rounded, size: 16),
-                              label: Text(t('إسناد أو تغيير الفني', 'Assign / Change Worker'), style: const TextStyle(fontSize: 12)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1A5D3A),
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 38,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () => _assignWorkerDialog(item),
+                                    icon: const Icon(Icons.assignment_ind_rounded, size: 15),
+                                    label: Text(t('إسناد الفني', 'Assign Worker'), style: const TextStyle(fontSize: 11.5)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF1A5D3A),
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 38,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SupervisorIncidentReportMainScreen(
+                                            userName: widget.userName,
+                                            isArabic: _isAr,
+                                            initialTabIndex: 0,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.picture_as_pdf_rounded, size: 15),
+                                    label: Text(t('تصدير التقرير', 'Export PDF'), style: const TextStyle(fontSize: 11.5)),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF1A5D3A),
+                                      side: const BorderSide(color: Color(0xFF1A5D3A)),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

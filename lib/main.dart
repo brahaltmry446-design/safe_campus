@@ -254,7 +254,7 @@ class _EnhancedLoginScreenState extends State<EnhancedLoginScreen> {
                           child: Row(
                             children: [
                               _buildRoleTab(0, t('طالب', 'Student'), Icons.school_outlined),
-                              _buildRoleTab(1, t('صيانة', 'Worker'), Icons.engineering_outlined),
+                              _buildRoleTab(1, t('الصيانة', 'Worker'), Icons.engineering_outlined),
                               _buildRoleTab(2, t('مشرف', 'Supervisor'), Icons.admin_panel_settings_outlined),
                             ],
                           ),

@@ -87,9 +87,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
                     height: 46,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(ctx);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        Navigator.of(ctx).popUntil((route) => route.isFirst);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1A5D3A),
